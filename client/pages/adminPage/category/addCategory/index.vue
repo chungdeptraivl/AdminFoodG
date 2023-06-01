@@ -10,6 +10,9 @@
                 v-model="form.name"
                 class="mb-6"
                 label="Name"
+                required
+                :rules="[(v) => !!v || 'Name is required']"
+                :error-messages="form.name ? [] : ['Name is required']"
               ></v-text-field>
               <v-text-field
                 v-model="form.icon"
@@ -21,7 +24,9 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click.prevent="addCategory()">Save</v-btn>
+        <v-btn color="primary" :disabled="!valid" @click.prevent="addCategory()"
+          >Save</v-btn
+        >
         <v-spacer></v-spacer>
         <v-btn color="success" to="/categoryDashboard"
           >Back CategoryTable</v-btn
@@ -42,6 +47,14 @@ export default {
         updatedBy: 2,
       },
     }
+  },
+
+  computed: {
+    valid() {
+      return (
+        !!this.form.name 
+      )
+    },
   },
 
   methods: {
@@ -66,6 +79,7 @@ export default {
         })
 
         this.$toast.global.mySuccess()
+        this.$router.push('/categoryDashboard')
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error.response.data)

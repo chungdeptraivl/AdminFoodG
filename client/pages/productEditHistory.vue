@@ -87,7 +87,7 @@ export default {
       loading: true,
       openNoAction: false,
       headers: [
-        { text: 'Action', value: 'action' },
+        { text: 'Status', value: 'action' },
         { text: 'Name', value: 'newValue.name' },
         { text: 'Image', value: 'newValue.img', sortable: false },
         { text: 'Description', value: 'newValue.dsc', sortable: false },

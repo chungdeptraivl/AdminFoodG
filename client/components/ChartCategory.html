@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+<body style="display: flex; align-items: flex-end; justify-content: space-around;">
+	<div id="bar">
+		<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+	</div>
+	<div class="123">
+		<a href="javascript:;" onclick="Print($('#bar'))">
+			<button
+				style="padding: 8px 16px; margin-bottom: 35px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; background-color: aquamarine;">Print
+				Chart</button>
+		</a>
+	</div>
+	<script id="chartjs" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script id="jquery" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script id="chartID">
+		var xValues = [];
+		var yValues = [];
+		const color = ["rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)", "rgb(67, 94, 190)"];
+		function addData(data) {
+			for (var i = 0; i < data.length; i++) {
+				xValues.push(data[i].key);
+				yValues.push(data[i].val);
+			}
+			createBarChart();
+		}
+		$.getJSON("http://localhost:8080/categoryPerDay", addData);
+		function createBarChart() {
+			new Chart("myChart", {
+				type: "bar",
+				data: {
+					labels: xValues,
+					datasets: [{
+						backgroundColor: color,
+						data: yValues
+					}]
+				},
+				options: {
+					legend: { display: false },
+					title: {
+						display: true,
+						text: "Number of sales per day by type"
+					},
+					scales: {
+						yAxes: [{ ticks: { min: 0, max: Math.floor((Math.max(...yValues) + 10) / 5) * 5 } }]
+					}
+				}
+			});
+		}
+	</script>
+
+	<script type="text/javascript">
+		function Print(elem) {
+			console.log(document.getElementsByTagName('script')[2].innerHTML)
+			var mywindow = window.open('', 'SAVE', 'height=400,width=600');
+			mywindow.document.write('<html><head>');
+			mywindow.document.write('</head\><body>');
+			mywindow.document.write($(elem).html());
+			mywindow.document.write(document.getElementsById('chartjs').outerHTML);
+			mywindow.document.write(document.getElementsById('jquery').outerHTML);
+			mywindow.document.write(document.getElementById('chartID').outerHTML);
+			mywindow.document.write('</body\></html\>');
+			mywindow.document.close();
+			mywindow.focus();
+			setTimeout(function () {
+				mywindow.print();
+				mywindow.close();
+			}, 500);
+			return true;
+		}
+
+	</script>
+
+</body>
+
+</html>

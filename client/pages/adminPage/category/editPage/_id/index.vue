@@ -10,6 +10,9 @@
                 v-model="form.name"
                 class="mb-6"
                 label="Name"
+                required
+                :rules="[(v) => !!v || 'Name is required']"
+                :error-messages="form.name ? [] : ['Name is required']"
               ></v-text-field>
               <v-text-field
                 v-model="form.icon"
@@ -21,11 +24,16 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click.prevent="saveCategory(category.data.id)"
+        <v-btn
+          color="primary"
+          :disabled="!valid"
+          @click.prevent="saveCategory(category.data.id)"
           >Save</v-btn
         >
         <v-spacer></v-spacer>
-        <v-btn color="success" to="/categoryDashboard">Back CategoryTable</v-btn>
+        <v-btn color="success" to="/categoryDashboard"
+          >Back CategoryTable</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-container>
@@ -54,6 +62,9 @@ export default {
     category() {
       return this.$store.state.category.item
     },
+    valid() {
+      return !!this.form.name
+    },
   },
 
   created() {
@@ -66,7 +77,6 @@ export default {
   },
 
   methods: {
-
     async saveCategory(id) {
       try {
         const dataForm = new FormData()

@@ -10,17 +10,37 @@
                 v-model="form.name"
                 class="mb-6"
                 label="Name"
+                required
+                :rules="[(v) => !!v || 'Name is required']"
+                :error-messages="form.name ? [] : ['Name is required']"
               ></v-text-field>
               <v-text-field
                 v-model="form.dsc"
                 class="mb-6"
                 label="Description"
+                required
+                :rules="[
+                  (v) => !!v || 'Description is required',
+                  (v) =>
+                    (v && v.length >= 10) ||
+                    'Description must be at least 10 characters',
+                ]"
+                :error-messages="form.dsc ? [] : ['Description is required']"
               ></v-text-field>
               <v-text-field
                 v-model.number="form.price"
                 class="mb-6"
                 label="Price"
-              ></v-text-field>
+                type="number"
+                required
+                :rules="[
+                  (v) =>
+                    (!isNaN(parseFloat(v)) && isFinite(v)) ||
+                    'Price must be a number',
+                ]"
+                :error-messages="form.price ? [] : ['Price is required']"
+              >
+              </v-text-field>
               <v-text-field v-model="form.country" label="Country" class="mb-6">
               </v-text-field>
             </v-col>
@@ -42,7 +62,10 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click.prevent="saveProduct(product.data.id)"
+        <v-btn
+          color="primary"
+          :disabled="!valid" 
+          @click.prevent="saveProduct(product.data.id)"
           >Save</v-btn
         >
         <v-spacer></v-spacer>
@@ -81,6 +104,16 @@ export default {
   computed: {
     product() {
       return this.$store.state.product.item
+    },
+    valid() {
+      return (
+        !!this.form.name &&
+        !!this.form.dsc &&
+        !!this.form.price &&
+        !isNaN(parseFloat(this.form.price)) &&
+        isFinite(this.form.price) &&
+        this.form.dsc.length >= 10
+      )
     },
   },
 
@@ -161,6 +194,9 @@ export default {
         this.form.id = id
         // eslint-disable-next-line no-console
         console.log(this.form)
+
+        // Kiểm tra biến valid để xác định tính hợp lệ của các trường nhập liệu
+
         await this.$axios.$put(`http://localhost:8080/products`, {
           id: this.form.id,
           name: this.form.name,

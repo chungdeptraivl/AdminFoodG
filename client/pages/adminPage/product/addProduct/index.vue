@@ -10,17 +10,37 @@
                 v-model="form.name"
                 class="mb-6"
                 label="Name"
+                required
+                :rules="[(v) => !!v || 'Name is required']"
+                :error-messages="form.name ? [] : ['Name is required']"
               ></v-text-field>
               <v-text-field
                 v-model="form.dsc"
                 class="mb-6"
                 label="Description"
+                required
+                :rules="[
+                  (v) => !!v || 'Description is required',
+                  (v) =>
+                    (v && v.length >= 10) ||
+                    'Description must be at least 10 characters',
+                ]"
+                :error-messages="form.dsc ? [] : ['Description is required']"
               ></v-text-field>
               <v-text-field
                 v-model.number="form.price"
                 class="mb-6"
                 label="Price"
-              ></v-text-field>
+                type="number"
+                required
+                :rules="[
+                  (v) =>
+                    (!isNaN(parseFloat(v)) && isFinite(v)) ||
+                    'Price must be a number',
+                ]"
+                :error-messages="form.price ? [] : ['Price is required']"
+              >
+              </v-text-field>
               <v-text-field v-model="form.country" label="Country" class="mb-6">
               </v-text-field>
             </v-col>
@@ -34,7 +54,7 @@
               <img
                 style="max-width: 250px"
                 :src="
-                  form.selectedFile
+                  form.img
                     ? form.img
                     : 'https://t4.ftcdn.net/jpg/04/75/01/23/240_F_475012363_aNqXx8CrsoTfJP5KCf1rERd6G50K0hXw.jpg'
                 "
@@ -46,7 +66,9 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click.prevent="addProduct()">Save</v-btn>
+        <v-btn color="primary" :disabled="!valid" @click.prevent="addProduct()"
+          >Save</v-btn
+        >
         <v-spacer></v-spacer>
         <v-btn color="success" to="/productDashboard">Back ProductTable</v-btn>
       </v-card-actions>
@@ -76,17 +98,43 @@ export default {
     }
   },
 
+  computed: {
+    valid() {
+      return (
+        !!this.form.name &&
+        !!this.form.dsc &&
+        !!this.form.price &&
+        !isNaN(parseFloat(this.form.price)) &&
+        isFinite(this.form.price) &&
+        this.form.dsc.length >= 10
+      )
+    },
+  },
+
   methods: {
-    onFileChange(e) {
-      const file = e.target.files[0]
+    async onFileChange(event) {
+      const file = event.target.files[0]
       if (file) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          this.form.img = event.target.result
+        const formData = new FormData()
+        formData.append('image', file)
+
+        try {
+          const response = await fetch('https://api.imgur.com/3/image/', {
+            method: 'POST',
+            headers: {
+              Authorization: 'Client-ID 59ab98495609928',
+            },
+            body: formData,
+          })
+
+          const data = await response.json()
+          this.form.img = data.data.link
+          // eslint-disable-next-line no-console
+          console.log(this.form.img)
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error)
         }
-        reader.readAsDataURL(file)
-        this.form.selectedFile = file
-        this.form.fileName = file.name
       }
     },
 
