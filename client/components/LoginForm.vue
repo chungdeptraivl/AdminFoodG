@@ -3,14 +3,19 @@
     <h2>Login</h2>
     <form @submit.prevent="submitForm">
       <div class="user-box">
-        <input v-model="username" type="text" name="username" required />
+        <input v-model="form.username" type="text" name="username" required />
         <label>Username</label>
       </div>
       <div class="user-box">
-        <input v-model="password" type="password" name="password" required />
+        <input
+          v-model="form.password"
+          type="password"
+          name="password"
+          required
+        />
         <label>Password</label>
       </div>
-      <button type="submit">
+      <button @click.prevent="submit">
         <span></span>
         <span></span>
         <span></span>
@@ -25,24 +30,46 @@
 export default {
   data() {
     return {
-      username: '',
-      password: '',
+      form: {
+        username: '',
+        password: '',
+      },
+
+      isAuthenticated: false,
     }
   },
 
   methods: {
-    async submitForm() {
-      await fetch('https://jsonplaceholder.typicode.com/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          username: this.username,
-          password: this.email,
-        }),
-      })
-      // Chuyển trang web đến adminPage
-      window.location.href = '/adminPage'
+    async submit() {
+      try {
+        const dataForm = new FormData()
+
+        dataForm.append('username', this.form.username)
+        dataForm.append('password', this.form.password)
+
+        await this.$axios.$post(
+          `http://localhost:8080/admins/loginAdmin`,
+          {
+            username: this.form.username,
+            password: this.form.password,
+          }
+        )
+
+        // eslint-disable-next-line no-console
+        console.log(this.form)
+        this.isAuthenticated = true
+
+        // Chuyển hướng sang trang adminPage nếu đăng nhập thành công
+        this.$router.push({
+          path: '/adminPage',
+        })
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+
+        // Báo lỗi và chỉ vào ô input nhập sai dữ liệu nếu đăng nhập thất bại
+        alert('Sai thông tin đăng nhập')
+      }
     },
   },
 }

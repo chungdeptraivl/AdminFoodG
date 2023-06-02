@@ -1,7 +1,6 @@
 <template>
   <v-col cols="12" md="3" class="mb-4">
-    <v-card>
-      <v-card-body class="px-3 py-4-5">
+    <v-card class="px-5 py-6" :to="'/categoryDashboard'" nuxt>
         <v-row class="d-flex justify-center align-center">
           <v-col cols="12" md="4">
             <v-icon class="d-flex justify-center align-center eye"
@@ -15,7 +14,6 @@
             </h3>
           </v-col>
         </v-row>
-      </v-card-body>
     </v-card>
   </v-col>
 </template>
@@ -35,7 +33,6 @@ export default {
 <style scoped>
 .eye {
   padding: 6px 8px;
-  margin-left: 10px;
   font-size: 30px;
   border-radius: 4px;
   background-color: #dc3545;

@@ -35,7 +35,12 @@
 
       <v-spacer />
 
-      <v-btn color="warning" @click="logout">Logout</v-btn>
+      <v-btn
+        color="warning"
+        style="color: #000; font-weight: bold"
+        @click="logout"
+        >Logout</v-btn
+      >
     </v-app-bar>
     <v-main>
       <v-container>
@@ -44,14 +49,16 @@
     </v-main>
 
     <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <v-col class="text-center" cols="12">
+        {{ new Date().getFullYear() }} — <strong>Nguyen Thanh Chung</strong>
+      </v-col>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
+
   data() {
     return {
       clipped: false,
@@ -101,7 +108,9 @@ export default {
   },
 
   methods: {
-    ...mapActions('loggedIn', ['logout']),
+    logout() {
+      this.$router.push('/')
+    },
   },
 }
 </script>

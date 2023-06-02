@@ -4,14 +4,15 @@
     <v-row>
       <v-col cols="12" md="9">
         <v-row>
-          <viewer-profile />
-          <viewer-product :product-count="productCount" />
+          <viewer-profile :customer-count="customerCount"/>
+          <viewer-product :product-count="productCount"/>
           <viewer-category :category-count="categoryCount" />
-          <viewer-invoice />
+          <viewer-invoice :invoice-count="invoiceCount"/>
         </v-row>
         <div class="my-6"></div>
         <v-row>
-          <v-card style="width: 100%; height: 400px">
+          <v-card style="width: 100%; max-height: 450px">
+            <v-card-title> Number of sales per day by type </v-card-title>
             <iframe
               src="http://127.0.0.1:5500/client/components/ChartCategory.html"
               style="width: 100%; height: 400px"
@@ -29,7 +30,7 @@
         <v-row>
           <v-card
             class="ml-6 scroll"
-            style="width: 100%; max-height: 400px; overflow-y: scroll"
+            style="width: 100%; max-height: 450px; overflow-y: scroll"
           >
             <viewer-user-orther />
           </v-card>
@@ -58,19 +59,34 @@ export default {
 
   data() {
     return {
+      customerCount: 0,
       productCount: 0,
       categoryCount: 0,
+      invoiceCount: 0,
     }
   },
 
   mounted() {
+    this.getCustomers()
     this.getProducts()
     this.getCategories()
+    this.getInvoices()
   },
 
   created() {},
 
   methods: {
+    async getCustomers() {
+      try {
+        const response = await this.$axios.$get(`api/customers`)
+        // eslint-disable-next-line no-console
+        console.log(response.data.length)
+        this.customerCount = response.data.length
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+    },
     async getProducts() {
       try {
         const response = await this.$axios.$get(`api/products`)
@@ -88,6 +104,17 @@ export default {
         // eslint-disable-next-line no-console
         console.log(response.data.length)
         this.categoryCount = response.data.length
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+    },
+    async getInvoices() {
+      try {
+        const response = await this.$axios.$get(`api/invoices`)
+        // eslint-disable-next-line no-console
+        console.log(response.data.length)
+        this.invoiceCount = response.data.length
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e)

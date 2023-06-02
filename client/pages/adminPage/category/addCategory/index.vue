@@ -37,6 +37,14 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+Vue.use(Toast, {
+  transition: 'Vue-Toastification__bounce',
+  maxToasts: 20,
+  newestOnTop: true,
+})
 export default {
   data() {
     return {
@@ -51,9 +59,7 @@ export default {
 
   computed: {
     valid() {
-      return (
-        !!this.form.name 
-      )
+      return !!this.form.name
     },
   },
 
@@ -78,12 +84,39 @@ export default {
           updatedBy: this.form.updatedBy,
         })
 
-        this.$toast.global.mySuccess()
+        this.$toast.success('Successfully added to category', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
+
         this.$router.push('/categoryDashboard')
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error.response.data)
-        this.$toast.global.myError()
+        this.$toast.error('Add to category failed', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: false,
+          hideProgressBar: true,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },

@@ -47,33 +47,9 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/toast',
+    '@nuxtjs/auth'
   ],
 
-  toast: {
-    position: 'top-right',
-    register: [
-      // Register custom toasts
-      {
-        name: 'myError',
-        message: 'Oops...Something went wrong!!!',
-        options: {
-          type: 'error',
-          duration: 3000,
-          timeout: 5000,
-        },
-      },
-      {
-        name: 'mySuccess',
-        message: 'Edit done successfully',
-        options: {
-          type: 'success',
-          duration: 3000,
-          timeout: 5000,
-        },
-      },
-    ],
-  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
@@ -106,4 +82,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  
 }

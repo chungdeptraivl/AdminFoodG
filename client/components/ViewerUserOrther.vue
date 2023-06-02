@@ -6,9 +6,9 @@
           <v-icon>{{ user.avatar }}</v-icon>
         </v-avatar>
         <v-list-item-content class="ms-4">
-          <v-list-item-title class="mb-1">{{ user.name }}</v-list-item-title>
+          <v-list-item-title class="mb-1">{{ user.username }}</v-list-item-title>
           <v-list-item-subtitle class="text-muted mb-0">{{
-            user.username
+            user.email
           }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -20,48 +20,28 @@
 export default {
   data() {
     return {
-      users: [
-        {
-          name: 'Hank Schrader',
-          username: '@johnducky',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'Dean Winchester',
-          username: '@imdean',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'John Dodol',
-          username: '@dodoljohn',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'Dean Winchester',
-          username: '@imdean',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'John Dodol',
-          username: '@dodoljohn',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'Dean Winchester',
-          username: '@imdean',
-          avatar: 'mdi-account',
-        },
-        {
-          name: 'John Dodol',
-          username: '@dodoljohn',
-          avatar: 'mdi-account',
-        },
-      ],
+      users: [],
     }
   },
+
+  mounted() {
+    this.getUsers()
+  },
+
   methods: {
-    startConversation() {
-      // Handle start conversation button click
+    async getUsers() {
+      try {
+        const response = await this.$axios.$get(`/api/admins`)
+        
+        this.users = response.data
+        // eslint-disable-next-line no-console
+        console.log(this.users)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+      } finally {
+        this.loading = false
+      }
     },
   },
 }

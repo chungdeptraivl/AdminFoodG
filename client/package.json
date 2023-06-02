@@ -13,15 +13,16 @@
     "lintfix": "prettier --write --list-different . && yarn lint:js --fix"
   },
   "dependencies": {
+    "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.13.6",
-    "@nuxtjs/toast": "^3.3.1",
     "core-js": "^3.25.3",
     "nuxt": "^2.15.8",
     "store2": "^2.14.2",
     "v-select2-component": "^0.4.7",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
+    "vue-template-compiler": "^2.7.10",
+    "vue-toastification": "^1.7.14"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",

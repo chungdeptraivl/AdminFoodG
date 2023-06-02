@@ -3,17 +3,18 @@
 
 <head>
 
-<body style="display: flex; align-items: flex-end; justify-content: space-around;">
-	<div id="bar">
-		<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-	</div>
-	<div class="123">
+<body>
+	<div style="margin-top: 10px ;display: flex; justify-content: space-around; align-items: end;">
+		<div id="bar">
+			<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+		</div>
 		<a href="javascript:;" onclick="Print($('#bar'))">
 			<button
 				style="padding: 8px 16px; margin-bottom: 35px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; background-color: aquamarine;">Print
 				Chart</button>
 		</a>
 	</div>
+
 	<script id="chartjs" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	<script id="jquery" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 	<script id="chartID">
@@ -40,10 +41,6 @@
 				},
 				options: {
 					legend: { display: false },
-					title: {
-						display: true,
-						text: "Number of sales per day by type"
-					},
 					scales: {
 						yAxes: [{ ticks: { min: 0, max: Math.floor((Math.max(...yValues) + 10) / 5) * 5 } }]
 					}
@@ -59,8 +56,8 @@
 			mywindow.document.write('<html><head>');
 			mywindow.document.write('</head\><body>');
 			mywindow.document.write($(elem).html());
-			mywindow.document.write(document.getElementsById('chartjs').outerHTML);
-			mywindow.document.write(document.getElementsById('jquery').outerHTML);
+			mywindow.document.write(document.getElementById('chartjs').outerHTML);
+			mywindow.document.write(document.getElementById('jquery').outerHTML);
 			mywindow.document.write(document.getElementById('chartID').outerHTML);
 			mywindow.document.write('</body\></html\>');
 			mywindow.document.close();
