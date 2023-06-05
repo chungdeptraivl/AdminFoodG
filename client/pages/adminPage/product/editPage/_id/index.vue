@@ -79,11 +79,14 @@
 import Vue from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-Vue.use(Toast, {
-  transition: 'Vue-Toastification__bounce',
-  maxToasts: 20,
-  newestOnTop: true,
-})
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -139,18 +142,6 @@ export default {
   },
 
   methods: {
-    // onFileChange(e) {
-    //   const file = e.target.files[0]
-    //   if (file) {
-    //     const reader = new FileReader()
-    //     reader.onload = (event) => {
-    //       this.form.img = event.target.result
-    //     }
-    //     reader.readAsDataURL(file)
-    //     this.form.selectedFile = file
-    //     this.form.fileName = file.name
-    //   }
-    // },
     async onFileChange(event) {
       const file = event.target.files[0]
       if (file) {
@@ -247,8 +238,8 @@ export default {
           pauseOnHover: true,
           draggable: true,
           draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
           closeButton: 'button',
           icon: true,
           rtl: false,

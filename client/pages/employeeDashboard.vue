@@ -87,6 +87,7 @@ export default {
       headers: [
         { text: 'Username', value: 'username' },
         { text: 'Avatar', value: 'avatar' },
+        { text: 'Fullname', value: 'fullName' },
         { text: 'Email', value: 'email' },
         { text: 'Gender', value: 'gender' },
         { text: 'Birthday At', value: 'birthday' },
@@ -104,6 +105,7 @@ export default {
   methods: {
     async getadmins() {
       try {
+
         const response = await this.$axios.$get(`/api/admins`)
         response.data.forEach((admin) => {
           admin.createdAt = new Date(admin.createdAt)

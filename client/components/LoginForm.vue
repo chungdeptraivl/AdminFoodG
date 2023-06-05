@@ -3,19 +3,44 @@
     <h2>Login</h2>
     <form @submit.prevent="submitForm">
       <div class="user-box">
-        <input v-model="form.username" type="text" name="username" required />
-        <label>Username</label>
-      </div>
-      <div class="user-box">
-        <input
-          v-model="form.password"
-          type="password"
-          name="password"
+        <v-text-field
+          v-model="form.username"
+          type="text"
+          label="Username"
+          name="username"
+          :rules="[
+            (value) => !!value || 'This field is Required.',
+            (value) => !/\s/.test(value) || 'Spaces are not allowed.',
+          ]"
+          class="input"
+          hide-details="auto"
           required
         />
-        <label>Password</label>
+
+        <v-text-field
+          v-model="form.password"
+          :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+          :type="showPassword ? 'text' : 'password'"
+          label="Password"
+          name="password"
+          :rules="[
+            (value) => !!value || 'This field is Required.',
+            (value) => (value && value.length >= 8) || 'Min 8 characters',
+            (value) => !/\s/.test(value) || 'Spaces are not allowed.',
+          ]"
+          class="input"
+          hide-details="auto"
+          required
+          @click:append="showPassword = !showPassword"
+        />
       </div>
-      <button @click.prevent="submit">
+      <nuxt-link
+        to="/viewerPage/forgetPassword"
+        class="forget"
+        style="text-align: center; text-decoration: none; opacity: 0.8"
+        >Forget Password</nuxt-link
+      >
+      <button :disabled="!valid" @click.prevent="submit">
         <span></span>
         <span></span>
         <span></span>
@@ -27,6 +52,17 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -35,8 +71,19 @@ export default {
         password: '',
       },
 
-      isAuthenticated: false,
+      rules: [
+        (value) => !!value || 'This field is Required.',
+        (value) => (value && value.length >= 8) || 'Min 8 characters',
+      ],
+
+      showPassword: false
     }
+  },
+
+  computed: {
+    valid() {
+      return !!this.form.username && !!this.form.password
+    },
   },
 
   methods: {
@@ -47,17 +94,25 @@ export default {
         dataForm.append('username', this.form.username)
         dataForm.append('password', this.form.password)
 
-        await this.$axios.$post(
-          `http://localhost:8080/admins/loginAdmin`,
-          {
-            username: this.form.username,
-            password: this.form.password,
-          }
-        )
+        await this.$axios.$post(`http://localhost:8080/admins/loginAdmin`, {
+          username: this.form.username,
+          password: this.form.password,
+        })
 
-        // eslint-disable-next-line no-console
-        console.log(this.form)
-        this.isAuthenticated = true
+        this.$toast('Login success, wellcome admin!', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
 
         // Chuyển hướng sang trang adminPage nếu đăng nhập thành công
         this.$router.push({
@@ -68,7 +123,20 @@ export default {
         console.log(error)
 
         // Báo lỗi và chỉ vào ô input nhập sai dữ liệu nếu đăng nhập thất bại
-        alert('Sai thông tin đăng nhập')
+        this.$toast.error(error.response.data.message, {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },
@@ -100,14 +168,13 @@ export default {
   position: relative;
 }
 
-.login-box .user-box input {
+.login-box .user-box .input {
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
   color: #fff;
   margin-bottom: 30px;
   border: none;
-  border-bottom: 1px solid #fff;
   outline: none;
   background: transparent;
 }
@@ -122,8 +189,8 @@ export default {
   transition: 0.5s;
 }
 
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
+.login-box .user-box .input:focus ~ label,
+.login-box .user-box .input:valid ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;
@@ -237,5 +304,9 @@ export default {
   100% {
     bottom: 100%;
   }
+}
+
+.forget:hover {
+  color: rgb(26, 167, 255);
 }
 </style>

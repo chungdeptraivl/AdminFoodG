@@ -12,7 +12,6 @@
                 label="Name"
                 required
                 :rules="[(v) => !!v || 'Name is required']"
-                :error-messages="form.name ? [] : ['Name is required']"
               ></v-text-field>
               <v-text-field
                 v-model="form.icon"
@@ -24,12 +23,13 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" :disabled="!valid" @click.prevent="addCategory()"
-          >Save</v-btn
-        >
-        <v-spacer></v-spacer>
         <v-btn color="success" to="/categoryDashboard"
           >Back CategoryTable</v-btn
+        >
+        <v-spacer></v-spacer>
+
+        <v-btn color="primary" :disabled="!valid" @click.prevent="addCategory()"
+          >Save</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -40,11 +40,14 @@
 import Vue from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-Vue.use(Toast, {
-  transition: 'Vue-Toastification__bounce',
-  maxToasts: 20,
-  newestOnTop: true,
-})
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -92,8 +95,8 @@ export default {
           pauseOnHover: true,
           draggable: true,
           draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
           closeButton: 'button',
           icon: true,
           rtl: false,

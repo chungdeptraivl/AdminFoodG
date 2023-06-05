@@ -49,7 +49,7 @@
           color="indigo"
           @click="updateProduct(item)"
         >
-          Refresh
+          Rechange
         </v-btn>
         <v-btn v-else color="deep-orange" @click="noAction"> No Action </v-btn>
       </template>
@@ -68,6 +68,18 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
+
 export default {
   data() {
     return {
@@ -155,11 +167,39 @@ export default {
         // eslint-disable-next-line no-console
         console.log(response)
         this.getProducts()
-        this.$toast.global.mySuccess()
+
+        this.$toast.success('Restore successfully, check product manager', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
-        this.$toast.global.myError()
+
+        this.$toast.error('Opp!!! Something was wrong', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
 
@@ -187,13 +227,41 @@ export default {
           data
         )
 
+        this.$toast.success('Rechange successfully, check product manager', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
+
         // eslint-disable-next-line no-console
         console.log(response)
-        this.$toast.global.mySuccess()
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
-        this.$toast.global.myError()
+
+        this.$toast.error('Opp!!! Something was wrong', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },

@@ -130,11 +130,41 @@ export default {
         await this.$axios.$delete(`http://localhost:8080/products/${id}/2`)
         this.deleteDialogVisible = false
         this.getProducts()
+
+        this.$toast.success('Delete done! Check your product manager', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
         // eslint-disable-next-line no-console
         console.log(error.response.data)
+
+        this.$toast.error('Delete failed product', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },

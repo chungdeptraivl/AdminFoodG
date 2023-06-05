@@ -14,8 +14,9 @@
               :rules="[
                 (v) => !!v || 'Username is required',
                 (v) =>
-                  (v && v.length >= 6) ||
-                  'Username must be at least 6 characters',
+                  (v && v.length >= 5) ||
+                  'Username must be at least 5 characters',
+                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
               ]"
             ></v-text-field>
           </v-col>
@@ -37,7 +38,7 @@
               v-model="form.birthday"
               label="Birth date"
               type="date"
-              required
+              :rules="[checkDate]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
@@ -49,21 +50,25 @@
               :rules="[
                 (v) => !!v || 'Email is required',
                 (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
+                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
               ]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
               v-model="form.password"
-              label="Password*"
-              type="password"
-              required
+              :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showPassword ? 'text' : 'password'"
+              label="Password"
+              name="password"
               :rules="[
-                (v) => !!v || 'Password is required',
-                (v) =>
-                  (v && v.length >= 8) ||
-                  'Password must be at least 8 characters',
+                (value) => !!value || 'This field is Required.',
+                (value) => (value && value.length >= 8) || 'Min 8 characters',
+                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
               ]"
+              hide-details="auto"
+              required
+              @click:append="showPassword = !showPassword"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
@@ -80,12 +85,12 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
-            <v-text-field
+            <v-select
               v-model="form.gender"
+              :items="genderOptions"
               label="Gender"
-              type="boolean"
               required
-            ></v-text-field>
+            ></v-select>
           </v-col>
         </v-row>
       </v-container>
@@ -109,6 +114,17 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -121,6 +137,13 @@ export default {
         role: '',
         gender: '',
       },
+
+      genderOptions: [
+        { text: 'Male', value: true },
+        { text: 'Female', value: false },
+      ],
+
+      showPassword: false,
     }
   },
 
@@ -137,20 +160,28 @@ export default {
   },
 
   methods: {
+    checkDate(value) {
+      const minDate = new Date()
+      minDate.setFullYear(minDate.getFullYear() - 80)
+
+      const maxDate = new Date()
+      maxDate.setFullYear(maxDate.getFullYear() - 18)
+
+      const inputDate = new Date(value)
+
+      if (inputDate > maxDate) {
+        return 'You must be at least 18 years old.'
+      }
+
+      if (inputDate < minDate) {
+        return 'You must be less than 80 years old.'
+      }
+
+      return true
+    },
+
     async submit() {
       try {
-        const dataForm = new FormData()
-
-        dataForm.append('username', this.form.username)
-        dataForm.append('fullName', this.form.fullName)
-        dataForm.append('password', this.form.password)
-        dataForm.append('email', this.form.email)
-        dataForm.append('birthday', this.form.birthday)
-        dataForm.append('role', this.form.role)
-        dataForm.append('gender', this.form.gender)
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
-
         // eslint-disable-next-line no-console
         console.log(this.form)
         await this.$axios.$post(`http://localhost:8080/admins/register`, {
@@ -163,13 +194,50 @@ export default {
           gender: this.form.gender,
         })
 
+        this.$toast('Registor done, now waiting OTP', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
+
         this.$router.push({
           path: '/viewerPage/checkOtp',
-          query: { username: this.form.username },
+          query: {
+            username: this.form.username,
+            fullName: this.form.fullName,
+            password: this.form.password,
+            email: this.form.email,
+            birthday: this.form.birthday,
+            role: this.form.role,
+            gender: this.form.gender,
+          },
         })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
+        this.$toast.error(error.response.data.message, {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },

@@ -54,7 +54,9 @@
 			console.log(document.getElementsByTagName('script')[2].innerHTML)
 			var mywindow = window.open('', 'SAVE', 'height=400,width=600');
 			mywindow.document.write('<html><head>');
+			mywindow.document.write('<style>#myChart{display:flex; align-items:center; justify-content:center;}</style>');
 			mywindow.document.write('</head\><body>');
+			mywindow.document.write('<h1 style="text-align:center; font-weight:bold;"> Number of sales per day by type </h1>');
 			mywindow.document.write($(elem).html());
 			mywindow.document.write(document.getElementById('chartjs').outerHTML);
 			mywindow.document.write(document.getElementById('jquery').outerHTML);

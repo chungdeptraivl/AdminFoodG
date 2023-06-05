@@ -18,6 +18,6 @@ export default {}
 
 <style scoped>
 .wrapper {
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient(#101520, #203144);
 }
 </style>

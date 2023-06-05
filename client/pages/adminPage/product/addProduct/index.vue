@@ -11,8 +11,12 @@
                 class="mb-6"
                 label="Name"
                 required
-                :rules="[(v) => !!v || 'Name is required']"
-                :error-messages="form.name ? [] : ['Name is required']"
+                :rules="[
+                  (v) => !!v || 'Name Product is required',
+                  (v) =>
+                    (v && v.length >= 3) ||
+                    'Name must be at least 3 characters',
+                ]"
               ></v-text-field>
               <v-text-field
                 v-model="form.dsc"
@@ -22,10 +26,9 @@
                 :rules="[
                   (v) => !!v || 'Description is required',
                   (v) =>
-                    (v && v.length >= 10) ||
-                    'Description must be at least 10 characters',
+                    (v && v.length >= 3) ||
+                    'Description must be at least 3 characters',
                 ]"
-                :error-messages="form.dsc ? [] : ['Description is required']"
               ></v-text-field>
               <v-text-field
                 v-model.number="form.price"
@@ -37,8 +40,8 @@
                   (v) =>
                     (!isNaN(parseFloat(v)) && isFinite(v)) ||
                     'Price must be a number',
+                  (v) => v >= 0 || 'Price must not be negative',
                 ]"
-                :error-messages="form.price ? [] : ['Price is required']"
               >
               </v-text-field>
               <v-text-field v-model="form.country" label="Country" class="mb-6">
@@ -66,11 +69,12 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
+        <v-btn color="success" to="/productDashboard">Back ProductTable</v-btn>
+
+        <v-spacer></v-spacer>
         <v-btn color="primary" :disabled="!valid" @click.prevent="addProduct()"
           >Save</v-btn
         >
-        <v-spacer></v-spacer>
-        <v-btn color="success" to="/productDashboard">Back ProductTable</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -80,11 +84,14 @@
 import Vue from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-Vue.use(Toast, {
-  transition: 'Vue-Toastification__bounce',
-  maxToasts: 20,
-  newestOnTop: true,
-})
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -93,7 +100,7 @@ export default {
         name: '',
         img: '',
         dsc: '',
-        price: 0,
+        price: '',
         country: '',
         rate: '',
 
@@ -114,7 +121,7 @@ export default {
         !!this.form.price &&
         !isNaN(parseFloat(this.form.price)) &&
         isFinite(this.form.price) &&
-        this.form.dsc.length >= 10
+        this.form.dsc.length >= 3
       )
     },
   },
@@ -186,8 +193,8 @@ export default {
           pauseOnHover: true,
           draggable: true,
           draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
           closeButton: 'button',
           icon: true,
           rtl: false,
@@ -206,8 +213,8 @@ export default {
           pauseOnHover: true,
           draggable: true,
           draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
           closeButton: 'button',
           icon: true,
           rtl: false,
