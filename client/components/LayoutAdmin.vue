@@ -34,13 +34,6 @@
       </v-btn>
 
       <v-spacer />
-
-      <v-btn
-        color="warning"
-        style="color: #000; font-weight: bold"
-        @click="logout"
-        >Logout</v-btn
-      >
     </v-app-bar>
     <v-main>
       <v-container>
@@ -58,7 +51,6 @@
 
 <script>
 export default {
-
   data() {
     return {
       clipped: false,
@@ -76,30 +68,35 @@ export default {
           to: '/productDashboard',
         },
         {
-          icon: 'mdi-call-split',
+          icon: 'mdi-rectangle',
           title: 'Product History Manager',
           to: '/productEditHistory',
         },
         {
-          icon: 'mdi-domain',
+          icon: 'mdi-call-split',
           title: 'Category Manager',
           to: '/categoryDashboard',
         },
         {
-          icon: 'mdi-message-text',
+          icon: 'mdi-file',
           title: 'Invoice Manager',
           to: '/invoiceDashboard',
+        },
+        {
+          icon: 'mdi-tag',
+          title: 'Discount Manager',
+          to: '/discountDashboard',
         },
         {
           icon: 'mdi-account',
           title: 'Employee Manager',
           to: '/employeeDashboard',
         },
-        {
-          icon: 'mdi-account-multiple',
-          title: 'Client Manager',
-          to: '/clientDashboard',
-        },
+        // {
+        //   icon: 'mdi-account-multiple',
+        //   title: 'Client Manager',
+        //   to: '/clientDashboard',
+        // },
       ],
       miniVariant: false,
       right: true,

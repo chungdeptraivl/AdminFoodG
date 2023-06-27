@@ -9,15 +9,8 @@
           <v-col cols="12" sm="6" md="4">
             <v-text-field
               v-model="form.username"
-              label="Legal Username*"
-              required
-              :rules="[
-                (v) => !!v || 'Username is required',
-                (v) =>
-                  (v && v.length >= 5) ||
-                  'Username must be at least 5 characters',
-                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
-              ]"
+              label="Username"
+              :rules="[rules.required, rules.minLength(5), rules.noSpaces]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="4">
@@ -44,14 +37,9 @@
           <v-col cols="12" sm="6">
             <v-text-field
               v-model="form.email"
-              label="Email*"
+              label="Email"
               type="email"
-              required
-              :rules="[
-                (v) => !!v || 'Email is required',
-                (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
-                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
-              ]"
+              :rules="[rules.required, rules.email, rules.noSpaces]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
@@ -62,9 +50,10 @@
               label="Password"
               name="password"
               :rules="[
-                (value) => !!value || 'This field is Required.',
-                (value) => (value && value.length >= 8) || 'Min 8 characters',
-                (value) => !/\s/.test(value) || 'Spaces are not allowed.',
+                rules.required,
+                rules.minLength(8),
+                rules.maxLength(20),
+                rules.noSpaces,
               ]"
               hide-details="auto"
               required
@@ -76,12 +65,7 @@
               v-model="form.role"
               label="Role"
               type="number"
-              required
-              :rules="[
-                (v) => !!v || 'Role is required',
-                (v) =>
-                  (v && v >= 1 && v <= 10) || 'Role must be between 1 and 10',
-              ]"
+              :rules="[rules.required, rules.minValue(0), rules.maxValue(5)]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
@@ -100,15 +84,8 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text to="/adminPage"> Close </v-btn>
-      <v-btn
-        color="blue darken-1"
-        text
-        :disabled="!valid"
-        @click.prevent="submit"
-      >
-        Save
-      </v-btn>
+      <v-btn color="error" text to="/adminPage"> Close </v-btn>
+      <v-btn color="primary" text :disabled="!isFormValid" @click="submit">Save</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -144,18 +121,46 @@ export default {
       ],
 
       showPassword: false,
+
+      rules: {
+        required: (value) => !!value || 'Required.',
+        email: (value) => /.+@.+\..+/.test(value) || 'Invalid email.',
+        minLength: (length) => (value) =>
+          (value && value.length >= length) ||
+          `Must be at least ${length} characters.`,
+        maxLength: (length) => (value) =>
+          (value && value.length <= length) ||
+          `Must be at most ${length} characters.`,
+        minValue: (value) => (num) =>
+          num === undefined || num >= value || `Must be at least ${value}.`,
+        maxValue: (value) => (num) =>
+          num === undefined || num <= value || `Must be at most ${value}.`,
+        noSpaces: (value) => !/\s/.test(value) || 'Spaces are not allowed.',
+      },
     }
   },
 
   computed: {
-    valid() {
-      return (
-        !!this.form.username &&
-        !!this.form.fullName &&
-        !!this.form.password &&
-        !!this.form.email &&
-        !!this.form.role
-      )
+    isFormValid() {
+      const { username, email, password, role } = this.form
+      const isUsernameValid =
+        !!username &&
+        this.rules.noSpaces(username) === true &&
+        this.rules.minLength(5)(username) === true
+      const isEmailValid =
+        !!email &&
+        this.rules.noSpaces(email) === true &&
+        this.rules.email(email) === true
+      const isPasswordValid =
+        !!password &&
+        this.rules.noSpaces(password) === true &&
+        this.rules.minLength(8)(password) === true &&
+        this.rules.maxLength(20)(password) === true
+      const isRoleValid =
+        role !== null &&
+        this.rules.minValue(0)(role) === true &&
+        this.rules.maxValue(5)(role) === true
+      return isUsernameValid && isEmailValid && isPasswordValid && isRoleValid
     },
   },
 

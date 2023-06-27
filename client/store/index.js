@@ -1,9 +1,9 @@
-export const getters = {
-    isAuthenticated(state) {
-        return state.auth.loggedIn
+export const state = () => ({
+    user: null,
+  })
+  
+  export const mutations = {
+    SET_USER(state, user) {
+      state.user = user
     },
-
-    loggedInUser(state) {
-        return state.auth.user
-    }
-};
+  }

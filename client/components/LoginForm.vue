@@ -56,6 +56,8 @@ import Vue from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
+import { mapMutations } from 'vuex'
+
 if (process.browser) {
   Vue.use(Toast, {
     transition: 'Vue-Toastification__bounce',
@@ -63,6 +65,7 @@ if (process.browser) {
     newestOnTop: true,
   })
 }
+
 export default {
   data() {
     return {
@@ -76,7 +79,7 @@ export default {
         (value) => (value && value.length >= 8) || 'Min 8 characters',
       ],
 
-      showPassword: false
+      showPassword: false,
     }
   },
 
@@ -94,10 +97,16 @@ export default {
         dataForm.append('username', this.form.username)
         dataForm.append('password', this.form.password)
 
-        await this.$axios.$post(`http://localhost:8080/admins/loginAdmin`, {
-          username: this.form.username,
-          password: this.form.password,
-        })
+        const response = await this.$axios.$post(
+          `http://localhost:8080/admins/loginAdmin`,
+          {
+            username: this.form.username,
+            password: this.form.password,
+          }
+        )
+
+        // Lưu thông tin người dùng vào state
+        this.setUser(response.user)
 
         this.$toast('Login success, wellcome admin!', {
           position: 'top-right',
@@ -112,6 +121,16 @@ export default {
           closeButton: 'button',
           icon: true,
           rtl: false,
+        })
+
+        this.$store.commit('SET_USER', {
+          username: this.form.username,
+          fullName: this.form.fullName,
+          password: this.form.password,
+          email: this.form.email,
+          birthday: this.form.birthday,
+          role: this.form.role,
+          gender: this.form.gender,
         })
 
         // Chuyển hướng sang trang adminPage nếu đăng nhập thành công
@@ -139,6 +158,8 @@ export default {
         })
       }
     },
+
+    ...mapMutations(['setUser']),
   },
 }
 </script>

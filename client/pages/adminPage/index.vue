@@ -4,12 +4,11 @@
     <v-row>
       <v-col cols="12" md="9">
         <v-row>
-          <viewer-profile :customer-count="customerCount"/>
-          <viewer-product :product-count="productCount"/>
+          <viewer-profile :customer-count="customerCount" />
+          <viewer-product :product-count="productCount" />
           <viewer-category :category-count="categoryCount" />
-          <viewer-invoice :invoice-count="invoiceCount"/>
+          <viewer-invoice :invoice-count="invoiceCount" />
         </v-row>
-        <div class="my-6"></div>
         <v-row>
           <v-card style="width: 100%; max-height: 450px">
             <v-card-title> Number of sales per day by type </v-card-title>

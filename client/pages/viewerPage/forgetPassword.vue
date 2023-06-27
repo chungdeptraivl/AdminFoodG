@@ -59,6 +59,8 @@ export default {
   data: () => ({
     form: {
       email: '',
+      username: '',
+      password: '',
     },
 
     showPassword: false,
@@ -78,15 +80,6 @@ export default {
   methods: {
     async submit() {
       try {
-        const dataForm = new FormData()
-
-        dataForm.append('email', this.form.email)
-        dataForm.append('password', this.form.password)
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
-
-        // eslint-disable-next-line no-console
-        console.log(this.form)
         await this.$axios.$patch(
           `http://localhost:8080/admins/forgetPassword`,
           {
@@ -112,7 +105,10 @@ export default {
 
         this.$router.push({
           path: '/viewerPage/checkOtpNewPass',
-          query: { email: this.form.email, password: this.form.password },
+          query: {
+            email: this.form.email,
+            password: this.form.password,
+          },
         })
       } catch (error) {
         // eslint-disable-next-line no-console

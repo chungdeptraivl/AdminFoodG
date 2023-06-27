@@ -10,10 +10,6 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-spacer></v-spacer>
-      <v-btn color="primary" to="adminPage/invoice/addInvoice"
-        >Add Invoice</v-btn
-      >
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -27,11 +23,6 @@
         lastIcon: 'mdi-chevron-double-right',
       }"
     >
-      <template slot="item.edit" slot-scope="{ item }">
-        <v-btn color="success" :to="`/adminPage/invoice/editPage/${item.id}`">
-          Edit
-        </v-btn>
-      </template>
       <template slot="item.delete" slot-scope="{ item }">
         <v-btn color="error" @click="openDelete(item.id)"> Delete </v-btn>
       </template>
@@ -54,6 +45,17 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -113,6 +115,7 @@ export default {
             .split('.')[0]
         })
         this.invoices = response.data
+
         // eslint-disable-next-line no-console
         console.log(this.invoices)
       } catch (error) {
@@ -128,16 +131,46 @@ export default {
       this.id = id
     },
 
-    async deleteProduct(id) {
+    async deleteInvoice(id) {
       try {
-        await this.$axios.$delete(`http://localhost:8080/invoices/detail/${id}`)
+        await this.$axios.$delete(`http://localhost:8080/invoices/${id}`)
         this.deleteDialogVisible = false
         this.getInvoices()
+
+        this.$toast.success('Delete done! Check your invoice manager', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
         // eslint-disable-next-line no-console
         console.log(error.response.data)
+
+        this.$toast.error('Delete failed invoice', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       }
     },
   },

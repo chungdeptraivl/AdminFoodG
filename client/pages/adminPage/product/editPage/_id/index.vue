@@ -22,8 +22,8 @@
                 :rules="[
                   (v) => !!v || 'Description is required',
                   (v) =>
-                    (v && v.length >= 10) ||
-                    'Description must be at least 10 characters',
+                    (v && v.length >= 3) ||
+                    'Description must be at least 3 characters',
                 ]"
                 :error-messages="form.dsc ? [] : ['Description is required']"
               ></v-text-field>
@@ -37,6 +37,7 @@
                   (v) =>
                     (!isNaN(parseFloat(v)) && isFinite(v)) ||
                     'Price must be a number',
+                  (v) => v >= 0 || 'Price must not be negative',
                 ]"
                 :error-messages="form.price ? [] : ['Price is required']"
               >
@@ -62,14 +63,14 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
+        <v-btn color="success" to="/productDashboard">Back ProductTable</v-btn>
+        <v-spacer></v-spacer>
         <v-btn
           color="primary"
           :disabled="!valid"
           @click.prevent="saveProduct(product.data.id)"
           >Save</v-btn
         >
-        <v-spacer></v-spacer>
-        <v-btn color="success" to="/productDashboard">Back ProductTable</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -123,12 +124,13 @@ export default {
         !!this.form.price &&
         !isNaN(parseFloat(this.form.price)) &&
         isFinite(this.form.price) &&
-        this.form.dsc.length >= 10
+        this.form.dsc.length >= 3
       )
     },
   },
 
   created() {
+    this.form.id = this.product.data.id
     this.form.name = this.product.data.name
     this.form.img = this.product.data.img
     this.form.dsc = this.product.data.dsc
@@ -169,81 +171,60 @@ export default {
     },
 
     async saveProduct(id) {
-      try {
-        const dataForm = new FormData()
+      if (this.form.price < 0) {
+        this.$toast.error('Price must not be negative')
+      } else {
+        // Thực hiện thêm sản phẩm
+        try {
+          await this.$axios.$put(`http://localhost:8080/products`, {
+            id: this.form.id,
+            name: this.form.name,
+            dsc: this.form.dsc,
+            img: this.form.img,
+            price: this.form.price,
+            country: this.form.country,
+            rate: this.form.rate,
+            createdBy: this.form.createdBy,
+            createdAt: this.form.createdAt,
+            updatedAt: this.form.updatedAt,
+            updatedBy: this.form.updatedBy,
+          })
 
-        dataForm.append('id', id)
-        dataForm.append('name', this.form.name)
-        dataForm.append('img', this.form.img)
-        dataForm.append('dsc', this.form.dsc)
-        dataForm.append('price', this.form.price)
-        dataForm.append('country', this.form.country)
-        dataForm.append('rate', this.form.rate)
-        dataForm.append('createdBy', this.form.createdBy)
-        dataForm.append('createdAt', this.form.createdAt)
-        dataForm.append('updatedBy', this.form.updatedBy)
-        dataForm.append('updatedAt', this.form.updatedAt)
+          this.$toast.success('Successfully edited in product', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
 
-        // if (this.form.selectedFile) {
-        //   dataForm.append('img', this.form.selectedFile, this.form.fileName)
-        // }
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
+          this.$router.push('/productDashboard')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error.response.data)
 
-        this.form.id = id
-        // eslint-disable-next-line no-console
-        console.log(this.form)
-
-        // Kiểm tra biến valid để xác định tính hợp lệ của các trường nhập liệu
-
-        await this.$axios.$put(`http://localhost:8080/products`, {
-          id: this.form.id,
-          name: this.form.name,
-          dsc: this.form.dsc,
-          img: this.form.img,
-          price: this.form.price,
-          country: this.form.country,
-          rate: this.form.rate,
-          createdBy: this.form.createdBy,
-          createdAt: this.form.createdAt,
-          updatedAt: this.form.updatedAt,
-          updatedBy: this.form.updatedBy,
-        })
-
-        this.$toast.success('Successfully edited in product', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
-
-        this.$router.push('/productDashboard')
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error.response.data)
-
-        this.$toast.error('OOPPP!!! Something was wrong', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
+          this.$toast.error('OOPPP!!! Something was wrong', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+        }
       }
     },
   },

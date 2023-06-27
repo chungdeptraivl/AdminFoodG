@@ -154,71 +154,76 @@ export default {
     },
 
     async addProduct() {
-      try {
-        const dataForm = new FormData()
+      if (this.form.price < 0) {
+        this.$toast.error('Price must not be negative')
+      } else {
+        // Thực hiện thêm sản phẩm
+        try {
+          const dataForm = new FormData()
 
-        dataForm.append('name', this.form.name)
-        dataForm.append('img', this.form.img)
-        dataForm.append('dsc', this.form.dsc)
-        dataForm.append('price', this.form.price)
-        dataForm.append('country', this.form.country)
-        dataForm.append('rate', this.form.rate)
-        dataForm.append('createdBy', this.form.createdBy)
-        dataForm.append('updatedBy', this.form.updatedBy)
+          dataForm.append('name', this.form.name)
+          dataForm.append('img', this.form.img)
+          dataForm.append('dsc', this.form.dsc)
+          dataForm.append('price', this.form.price)
+          dataForm.append('country', this.form.country)
+          dataForm.append('rate', this.form.rate)
+          dataForm.append('createdBy', this.form.createdBy)
+          dataForm.append('updatedBy', this.form.updatedBy)
 
-        if (this.form.selectedFile) {
-          dataForm.append('img', this.form.selectedFile, this.form.fileName)
+          if (this.form.selectedFile) {
+            dataForm.append('img', this.form.selectedFile, this.form.fileName)
+          }
+          // eslint-disable-next-line no-console
+          console.log(dataForm.entries())
+
+          // eslint-disable-next-line no-console
+          console.log(this.form)
+          await this.$axios.$post(`http://localhost:8080/products`, {
+            name: this.form.name,
+            dsc: this.form.dsc,
+            img: this.form.img,
+            price: this.form.price,
+            country: this.form.country,
+            rate: this.form.rate,
+            createdBy: this.form.createdBy,
+            updatedBy: this.form.updatedBy,
+          })
+
+          this.$toast.success('Successfully added to product', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+
+          this.$router.push('/productDashboard')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error.response.data)
+
+          this.$toast.error('Add to product failed', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
         }
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
-
-        // eslint-disable-next-line no-console
-        console.log(this.form)
-        await this.$axios.$post(`http://localhost:8080/products`, {
-          name: this.form.name,
-          dsc: this.form.dsc,
-          img: this.form.img,
-          price: this.form.price,
-          country: this.form.country,
-          rate: this.form.rate,
-          createdBy: this.form.createdBy,
-          updatedBy: this.form.updatedBy,
-        })
-
-        this.$toast.success('Successfully added to product', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
-
-        this.$router.push('/productDashboard')
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error.response.data)
-
-        this.$toast.error('Add to product failed', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
       }
     },
   },
