@@ -9,14 +9,13 @@
           label="Username"
           name="username"
           :rules="[
-            (value) => !!value || 'This field is Required.',
+            (value) => !!value || $t('Name is required'),
             (value) => !/\s/.test(value) || 'Spaces are not allowed.',
           ]"
           class="input"
           hide-details="auto"
           required
         />
-
         <v-text-field
           v-model="form.password"
           :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
@@ -56,8 +55,6 @@ import Vue from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
-import { mapMutations } from 'vuex'
-
 if (process.browser) {
   Vue.use(Toast, {
     transition: 'Vue-Toastification__bounce',
@@ -89,54 +86,59 @@ export default {
     },
   },
 
+  mounted() {
+    this.checkLogin() // Kiểm tra đăng nhập khi trang được tải lên
+  },
+
   methods: {
     async submit() {
       try {
-        const dataForm = new FormData()
-
-        dataForm.append('username', this.form.username)
-        dataForm.append('password', this.form.password)
-
-        const response = await this.$axios.$post(
-          `http://localhost:8080/admins/loginAdmin`,
-          {
-            username: this.form.username,
-            password: this.form.password,
-          }
+        const username = this.form.username
+        const password = this.form.password
+        const res = await this.$axios.$get(
+          '/api/loginsucess?_username=' + username + '&_password=' + password
         )
+        // eslint-disable-next-line no-console
+        console.log(res)
+        // eslint-disable-next-line no-console
+        console.log(this.form.username)
+        // eslint-disable-next-line no-console
+        console.log(this.form.password)
+        if (res === 'Sai password or username') {
+          this.$toast.error('Username or Password was wrong', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
 
-        // Lưu thông tin người dùng vào state
-        this.setUser(response.user)
+          this.$router.push('/')
+        } else {
+          this.$router.push('/adminPage')
 
-        this.$toast('Login success, wellcome admin!', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
-
-        this.$store.commit('SET_USER', {
-          username: this.form.username,
-          fullName: this.form.fullName,
-          password: this.form.password,
-          email: this.form.email,
-          birthday: this.form.birthday,
-          role: this.form.role,
-          gender: this.form.gender,
-        })
-
-        // Chuyển hướng sang trang adminPage nếu đăng nhập thành công
-        this.$router.push({
-          path: '/adminPage',
-        })
+          this.$toast.success('Login success! Wellcome FoodG\'s Admin', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
@@ -159,7 +161,21 @@ export default {
       }
     },
 
-    ...mapMutations(['setUser']),
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+    },
   },
 }
 </script>

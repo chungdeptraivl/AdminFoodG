@@ -13,11 +13,11 @@
                 required
                 :rules="[(v) => !!v || 'Name is required']"
               ></v-text-field>
-              <v-text-field
+              <!-- <v-text-field
                 v-model="form.icon"
                 class="mb-6"
                 label="Icon"
-              ></v-text-field>
+              ></v-text-field> -->
             </v-col>
           </v-row>
         </v-container>
@@ -53,7 +53,7 @@ export default {
     return {
       form: {
         name: '',
-        icon: '',
+        // icon: '',
         createdBy: 2,
         updatedBy: 2,
       },
@@ -69,20 +69,9 @@ export default {
   methods: {
     async addCategory() {
       try {
-        const dataForm = new FormData()
-
-        dataForm.append('name', this.form.name)
-        dataForm.append('icon', this.form.icon)
-        dataForm.append('createdBy', this.form.createdBy)
-        dataForm.append('updatedBy', this.form.updatedBy)
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
-
-        // eslint-disable-next-line no-console
-        console.log(this.form)
         await this.$axios.$post(`http://localhost:8080/categories`, {
           name: this.form.name,
-          icon: this.form.icon,
+          // icon: this.form.icon,
           createdBy: this.form.createdBy,
           updatedBy: this.form.updatedBy,
         })

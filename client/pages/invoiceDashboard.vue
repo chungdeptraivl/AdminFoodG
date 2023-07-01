@@ -85,6 +85,7 @@ export default {
 
   mounted() {
     this.getInvoices()
+    this.checkLogin()
   },
 
   methods: {
@@ -171,6 +172,22 @@ export default {
           icon: true,
           rtl: false,
         })
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

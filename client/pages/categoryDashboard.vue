@@ -74,7 +74,7 @@ export default {
       deleteDialogVisible: false,
       headers: [
         { text: 'Name', value: 'name' },
-        { text: 'Icon', value: 'icon', sortable: false },
+        // { text: 'Icon', value: 'icon', sortable: false },
         { text: 'Created At', value: 'createdAt' },
         { text: 'Created By', value: 'createdBy' },
         { text: 'Updated At', value: 'updatedAt' },
@@ -87,6 +87,7 @@ export default {
 
   mounted() {
     this.getCategories()
+    this.checkLogin()
   },
 
   methods: {
@@ -162,6 +163,22 @@ export default {
           icon: true,
           rtl: false,
         })
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

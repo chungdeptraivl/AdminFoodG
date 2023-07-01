@@ -3,6 +3,7 @@
     <v-main class="wrapper">
       <v-container>
         <v-row>
+          <!-- <language-select/> -->
           <v-col cols="12" sm="12">
             <nuxt />
           </v-col>
@@ -13,7 +14,12 @@
 </template>
 
 <script>
-export default {}
+// import LanguageSelect from '../components/LanguageSelect.vue'
+export default {
+  components: {
+    // LanguageSelect
+  }
+}
 </script>
 
 <style scoped>

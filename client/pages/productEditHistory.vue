@@ -28,14 +28,14 @@
           {{ item.action }}
         </v-chip>
       </template>
-      <template slot="item.newValue.img" slot-scope="{ item }">
+      <!-- <template slot="item.oldValue.img" slot-scope="{ item }">
         <v-img
-          :src="item.newValue.img"
-          :alt="item.newValue.name"
+          :src="item.oldValue.img"
+          :alt="item.oldValue.name"
           width="50"
           height="50"
         ></v-img>
-      </template>
+      </template> -->
       <template slot="item.restore" slot-scope="{ item }">
         <v-btn
           v-if="item.action === 'DELETE'"
@@ -86,7 +86,7 @@ export default {
       search: '',
       id: '',
       name: '',
-      img: '',
+      // img: '',
       dsc: '',
       price: '',
       country: '',
@@ -100,14 +100,14 @@ export default {
       openNoAction: false,
       headers: [
         { text: 'Status', value: 'action' },
-        { text: 'Name', value: 'newValue.name' },
-        { text: 'Image', value: 'newValue.img', sortable: false },
-        { text: 'Description', value: 'newValue.dsc', sortable: false },
-        { text: 'Price', value: 'newValue.price' },
-        { text: 'Country', value: 'newValue.country', sortable: false },
-        { text: 'Rate', value: 'newValue.rate' },
-        { text: 'Created By', value: 'newValue.createdBy' },
-        { text: 'Update By', value: 'newValue.updatedBy' },
+        { text: 'Name', value: 'oldValue.name' },
+        // { text: 'Image', value: 'oldValue.img', sortable: false },
+        { text: 'Description', value: 'oldValue.dsc', sortable: false },
+        { text: 'Price', value: 'oldValue.price' },
+        { text: 'Country', value: 'oldValue.country', sortable: false },
+        { text: 'Rate', value: 'oldValue.rate' },
+        { text: 'Created By', value: 'oldValue.createdBy' },
+        { text: 'Update By', value: 'oldValue.updatedBy' },
         { text: 'Created Date', value: 'createdDate' },
         { text: 'Action', value: 'restore', align: 'center', sortable: false },
       ],
@@ -116,6 +116,7 @@ export default {
 
   mounted() {
     this.getProducts()
+    this.checkLogin()
   },
 
   methods: {
@@ -140,7 +141,7 @@ export default {
       try {
         const response = await this.$axios.$get(`/api/products/edit-history`)
         response.data.forEach((product) => {
-          product.newValue = JSON.parse(product.newValue)
+          product.oldValue = JSON.parse(product.oldValue)
           product.createdDate = new Date(product.createdDate)
             .toISOString()
             .split('T')
@@ -205,20 +206,20 @@ export default {
 
     async updateProduct(product) {
       try {
-        const createdAt = new Date(product.newValue.createdAt)
-        const updatedAt = new Date(product.newValue.updatedAt)
+        const createdAt = new Date(product.oldValue.createdAt)
+        const updatedAt = new Date(product.oldValue.updatedAt)
 
         const data = {
           id: product.productId,
-          name: product.newValue.name,
-          img: product.newValue.img,
-          dsc: product.newValue.dsc,
-          price: product.newValue.price,
-          country: product.newValue.country,
-          rate: product.newValue.rate,
-          createdBy: product.newValue.createdBy,
+          name: product.oldValue.name,
+          // img: product.oldValue.img,
+          dsc: product.oldValue.dsc,
+          price: product.oldValue.price,
+          country: product.oldValue.country,
+          rate: product.oldValue.rate,
+          createdBy: product.oldValue.createdBy,
           createdAt: createdAt.toISOString(),
-          updatedBy: product.newValue.updatedBy,
+          updatedBy: product.oldValue.updatedBy,
           updatedAt: updatedAt.toISOString(),
         }
 
@@ -262,6 +263,22 @@ export default {
           icon: true,
           rtl: false,
         })
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

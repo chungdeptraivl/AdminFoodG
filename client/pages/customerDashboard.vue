@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      Employee Table
+      Customer Table
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -57,6 +57,7 @@ export default {
 
   mounted() {
     this.getcustomers()
+    this.checkLogin()
   },
 
   methods: {
@@ -88,6 +89,22 @@ export default {
         console.log(error)
       } finally {
         this.loading = false
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

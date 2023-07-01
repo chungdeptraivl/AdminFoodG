@@ -13,11 +13,11 @@
                 required
                 :rules="[(v) => !!v || 'Name is required']"
               ></v-text-field>
-              <v-text-field
+              <!-- <v-text-field
                 v-model="form.icon"
                 class="mb-6"
                 label="Icon"
-              ></v-text-field>
+              ></v-text-field> -->
             </v-col>
           </v-row>
         </v-container>
@@ -57,7 +57,7 @@ export default {
     return {
       form: {
         name: '',
-        icon: '',
+        // icon: '',
         createdAt: '',
         createdBy: '',
         updatedAt: '',
@@ -80,8 +80,9 @@ export default {
   },
 
   created() {
+    this.form.id = this.category.data.id
     this.form.name = this.category.data.name
-    this.form.icon = this.category.data.icon
+    // this.form.icon = this.category.data.icon
     this.form.createdAt = this.category.data.createdAt
     this.form.createdBy = this.category.data.createdBy
     this.form.updatedAt = this.category.data.updatedAt
@@ -91,25 +92,10 @@ export default {
   methods: {
     async saveCategory(id) {
       try {
-        const dataForm = new FormData()
-
-        dataForm.append('id', id)
-        dataForm.append('name', this.form.name)
-        dataForm.append('icon', this.form.icon)
-        dataForm.append('createdBy', this.form.createdBy)
-        dataForm.append('createdAt', this.form.createdAt)
-        dataForm.append('updatedBy', this.form.updatedBy)
-        dataForm.append('updatedAt', this.form.updatedAt)
-        // eslint-disable-next-line no-console
-        console.log(dataForm.entries())
-
-        this.form.id = id
-        // eslint-disable-next-line no-console
-        console.log(this.form)
         await this.$axios.$put(`http://localhost:8080/categories`, {
           id: this.form.id,
           name: this.form.name,
-          icon: this.form.icon,
+          // icon: this.form.icon,
           createdBy: this.form.createdBy,
           createdAt: this.form.createdAt,
           updatedAt: this.form.updatedAt,

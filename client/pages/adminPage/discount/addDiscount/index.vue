@@ -58,12 +58,12 @@
                   (v) =>
                     (/^\d+(\.\d+)?$/.test(v) &&
                       Number(v) >= 0 &&
-                      Number(v) < 1000000) ||
-                    'Valid Max Discount Price format must be between 0 - 1000000',
+                      Number(v) <= 1000) ||
+                    'Valid Max Discount Price format must be between 0 - 1000',
                 ]"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="6">
+            <!-- <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.minAmount"
                 class="mb-6"
@@ -74,12 +74,12 @@
                   (v) =>
                     (/^\d+(\.\d+)?$/.test(v) &&
                       Number(v) >= 0 &&
-                      Number(v) <= 1000000) ||
-                    'Valid Min Amount format must be between 0 - 1000000',
+                      Number(v) <= 1000) ||
+                    'Valid Min Amount format must be between 0 - 1000',
                 ]"
               ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
+            </v-col> -->
+            <!-- <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.maxAmount"
                 class="mb-6"
@@ -90,14 +90,14 @@
                   (v) =>
                     (/^\d+(\.\d+)?$/.test(v) &&
                       Number(v) > 0 &&
-                      Number(v) < 1000000) ||
-                    'Valid Max Amount format must be between 0 - 1000000',
+                      Number(v) <= 1000) ||
+                    'Valid Max Amount format must be between 0 - 1000',
                   (v) =>
                     Number(v) > Number(form.minAmount) ||
                     'Max Amount must be greater than Min Amount',
                 ]"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.startDate"
@@ -130,7 +130,7 @@
         >
         <v-spacer></v-spacer>
 
-        <v-btn color="primary" :disabled="!valid" @click.prevent="addCategory()"
+        <v-btn color="primary" :disabled="!valid" @click.prevent="addDiscount()"
           >Save</v-btn
         >
       </v-card-actions>
@@ -156,12 +156,12 @@ export default {
       form: {
         code: '',
         maxDiscountPrice: '',
-        minAmount: '',
+        // minAmount: '',
         percentage: '',
         endDate: '',
-        maxAmount: '',
+        // maxAmount: '',
         startDate: '',
-        isActive: '',
+        isActive: true,
         deletedBy: '',
         createdBy: 2,
         updatedBy: 2,
@@ -174,66 +174,77 @@ export default {
       return (
         !!this.form.code &&
         !!this.form.maxDiscountPrice &&
-        !!this.form.minAmount &&
-        !!this.form.maxAmount &&
+        // !!this.form.minAmount &&
+        // !!this.form.maxAmount &&
         !!this.form.percentage &&
         !!this.form.startDate &&
-        !!this.form.endDate &&
-        !!this.form.isActive
+        !!this.form.endDate
       )
     },
   },
 
   methods: {
-    async addCategory() {
-      try {
-        await this.$axios.$post(`http://localhost:8080/discounts`, {
-          code: this.form.code,
-          percentage: this.form.percentage,
-          maxDiscountPrice: this.form.maxDiscountPrice,
-          minAmount: this.form.minAmount,
-          maxAmount: this.form.maxAmount,
-          startDate: this.form.startDate,
-          endDate: this.form.endDate,
-          isActive: this.form.isActive,
-          createdBy: this.form.createdBy,
-          updatedBy: this.form.updatedBy,
-          deletedBy: this.form.deletedBy,
-        })
+    async addDiscount() {
+      if (
+        this.form.maxDiscountPrice < 0 ||
+        // this.form.maxAmount < 0 ||
+        // this.form.minAmount < 0 ||
+        this.form.percentage < 0
+      ) {
+        this.$toast.error('Add discount failed check again validation')
+      } else {
+        try {
+          await this.$axios.$post(`http://localhost:8080/discounts`, {
+            code: this.form.code,
+            percentage: this.form.percentage,
+            maxDiscountPrice: this.form.maxDiscountPrice,
+            // minAmount: this.form.minAmount,
+            // maxAmount: this.form.maxAmount,
+            startDate: this.form.startDate,
+            endDate: this.form.endDate,
+            isActive: this.form.isActive,
+            createdBy: this.form.createdBy,
+            updatedBy: this.form.updatedBy,
+            deletedBy: this.form.deletedBy,
+          })
 
-        this.$toast.success('Successfully added to discount', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
+          // eslint-disable-next-line no-console
+          console.log(this.form)
 
-        this.$router.push('/discountDashboard')
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error.response.data)
-        this.$toast.error('Add to discount failed', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: false,
-          hideProgressBar: true,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
+          this.$toast.success('Successfully added to discount', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+
+          this.$router.push('/discountDashboard')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error.response.data)
+          this.$toast.error('Add to discount failed', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+        }
       }
     },
   },

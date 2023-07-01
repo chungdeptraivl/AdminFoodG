@@ -92,7 +92,7 @@ export default {
         { text: 'Gender', value: 'gender' },
         { text: 'Birthday At', value: 'birthday' },
         { text: 'Updated At', value: 'updatedAt' },
-        { text: 'Role', value: 'role' },
+        // { text: 'Role', value: 'role' },
         // { text: 'Delete', value: 'delete', align: 'center', sortable: false },
       ],
     }
@@ -100,6 +100,7 @@ export default {
 
   mounted() {
     this.getadmins()
+    this.checkLogin()
   },
 
   methods: {
@@ -146,6 +147,22 @@ export default {
         this.$router.push('/viewerPage/registerAdmin')
       } else {
         alert('Wrong password')
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

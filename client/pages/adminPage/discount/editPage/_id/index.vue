@@ -55,7 +55,7 @@
                   (v) =>
                     (/^\d+(\.\d+)?$/.test(v) &&
                       Number(v) >= 0 &&
-                      Number(v) < 1000000) ||
+                      Number(v) <= 1000) ||
                     'Invalid Max Discount Price format',
                 ]"
               ></v-text-field>
@@ -83,7 +83,7 @@
                 :rules="[
                   (v) => !!v || 'Max Amount is required',
                   (v) =>
-                    (/^\d+(\.\d+)?$/.test(v) && Number(v) < 1000000) ||
+                    (/^\d+(\.\d+)?$/.test(v) && Number(v) <= 1000) ||
                     'Invalid Max Amount format',
                 ]"
               ></v-text-field>
@@ -200,56 +200,65 @@ export default {
 
   methods: {
     async saveDiscount(id) {
-      try {
-        await this.$axios.$put(`http://localhost:8080/discounts`, {
-          id: this.form.id,
-          code: this.form.code,
-          maxDiscountPrice: this.form.maxDiscountPrice,
-          minAmount: this.form.minAmount,
-          percentage: this.form.percentage,
-          endDate: this.form.endDate,
-          maxAmount: this.form.maxAmount,
-          startDate: this.form.startDate,
-          isActive: this.form.isActive,
-          deletedBy: this.form.deletedBy,
-          createdBy: this.form.createdBy,
-          updatedBy: this.form.updatedBy,
-        })
+      if (
+        this.form.maxDiscountPrice < 0 ||
+        this.form.maxAmount < 0 ||
+        this.form.minAmount < 0 ||
+        this.form.percentage < 0
+      ) {
+        this.$toast.error('Edit discount failed check again validation')
+      } else {
+        try {
+          await this.$axios.$put(`http://localhost:8080/discounts`, {
+            id: this.form.id,
+            code: this.form.code,
+            maxDiscountPrice: this.form.maxDiscountPrice,
+            minAmount: this.form.minAmount,
+            percentage: this.form.percentage,
+            endDate: this.form.endDate,
+            maxAmount: this.form.maxAmount,
+            startDate: this.form.startDate,
+            isActive: this.form.isActive,
+            deletedBy: this.form.deletedBy,
+            createdBy: this.form.createdBy,
+            updatedBy: this.form.updatedBy,
+          })
 
-        this.$toast.success('Successfully edited in discount', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
+          this.$toast.success('Successfully edited in discount', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
 
-        this.$router.push('/discountDashboard')
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error.response.data)
+          this.$router.push('/discountDashboard')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error.response.data)
 
-        this.$toast.error('OOPPP!!! Something was wrong', {
-          position: 'top-right',
-          timeout: 5000,
-          closeOnClick: true,
-          pauseOnFocusLoss: true,
-          pauseOnHover: true,
-          draggable: true,
-          draggablePercent: 0.6,
-          showCloseButtonOnHover: true,
-          hideProgressBar: false,
-          closeButton: 'button',
-          icon: true,
-          rtl: false,
-        })
+          this.$toast.error('OOPPP!!! Something was wrong', {
+            position: 'top-right',
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: true,
+            hideProgressBar: false,
+            closeButton: 'button',
+            icon: true,
+            rtl: false,
+          })
+        }
       }
     },
   },

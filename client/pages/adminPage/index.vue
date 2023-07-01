@@ -70,6 +70,7 @@ export default {
     this.getProducts()
     this.getCategories()
     this.getInvoices()
+    this.checkLogin() // Kiểm tra đăng nhập khi trang được tải lên
   },
 
   created() {},
@@ -115,6 +116,21 @@ export default {
         console.log(response.data.length)
         this.invoiceCount = response.data.length
       } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        if (response === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$toast.error('You must login')
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
         // eslint-disable-next-line no-console
         console.log(e)
       }

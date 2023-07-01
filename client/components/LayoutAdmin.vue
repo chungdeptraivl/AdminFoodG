@@ -29,11 +29,13 @@
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" app fixed>
       <v-app-bar-nav-icon class="mx-3" @click.stop="drawer = !drawer" />
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+      <v-btn  icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
 
       <v-spacer />
+
+      <v-btn color="error" @click.prevent="logout">Logout</v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -63,17 +65,17 @@ export default {
           to: '/adminPage',
         },
         {
-          icon: 'mdi-widgets',
+          icon: 'mdi-text-box-multiple',
           title: 'Product Manager',
           to: '/productDashboard',
         },
         {
-          icon: 'mdi-rectangle',
+          icon: 'mdi-pencil-box-multiple',
           title: 'Product History Manager',
           to: '/productEditHistory',
         },
         {
-          icon: 'mdi-call-split',
+          icon: 'mdi-shape',
           title: 'Category Manager',
           to: '/categoryDashboard',
         },
@@ -88,15 +90,20 @@ export default {
           to: '/discountDashboard',
         },
         {
+          icon: 'mdi-map-marker',
+          title: 'Province Manager',
+          to: '/provinceDashboard',
+        },
+        {
+          icon: 'mdi-face-agent',
+          title: 'Customer Manager',
+          to: '/customerDashboard',
+        },
+        {
           icon: 'mdi-account',
           title: 'Employee Manager',
           to: '/employeeDashboard',
         },
-        // {
-        //   icon: 'mdi-account-multiple',
-        //   title: 'Client Manager',
-        //   to: '/clientDashboard',
-        // },
       ],
       miniVariant: false,
       right: true,
@@ -104,10 +111,36 @@ export default {
     }
   },
 
+  mounted() {
+    this.loading()
+  },
+
   methods: {
-    logout() {
+    async logout() {
+      const res = await this.$axios.$get(`/api/logout`)
+      // eslint-disable-next-line no-console
+      console.log(res)
+
+      
+
       this.$router.push('/')
     },
+
+    async loading() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
+      }
+    }
   },
 }
 </script>

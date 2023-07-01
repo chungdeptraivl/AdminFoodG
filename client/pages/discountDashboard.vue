@@ -54,14 +54,17 @@
 </template>
 
 <script>
-// import Vue from 'vue'
-// import Toast from 'vue-toastification'
-// import 'vue-toastification/dist/index.css'
-// Vue.use(Toast, {
-//   transition: 'Vue-Toastification__bounce',
-//   maxToasts: 20,
-//   newestOnTop: true,
-// })
+import Vue from 'vue'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css'
+
+if (process.browser) {
+  Vue.use(Toast, {
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 20,
+    newestOnTop: true,
+  })
+}
 export default {
   data() {
     return {
@@ -71,10 +74,10 @@ export default {
       deleteDialogVisible: false,
       headers: [
         { text: 'Code', value: 'code' },
-        { text: 'Percentage', value: 'percentage'},
-        { text: 'Max Discount Price', value: 'maxDiscountPrice'},
-        { text: 'Min Amount', value: 'minAmount' },
-        { text: 'Max Amount', value: 'maxAmount'},
+        { text: 'Percentage', value: 'percentage' },
+        { text: 'Max Discount Price', value: 'maxDiscountPrice' },
+        // { text: 'Min Amount', value: 'minAmount' },
+        // { text: 'Max Amount', value: 'maxAmount' },
         { text: 'Start Date', value: 'startDate' },
         { text: 'End Date', value: 'endDate' },
         { text: 'Active', value: 'isActive' },
@@ -92,6 +95,7 @@ export default {
 
   mounted() {
     this.getDiscount()
+    this.checkLogin()
   },
 
   methods: {
@@ -147,40 +151,56 @@ export default {
         this.deleteDialogVisible = false
         this.getDiscount()
 
-        // this.$toast.success('Delete done! Check your discount manager', {
-        //   position: 'top-right',
-        //   timeout: 5000,
-        //   closeOnClick: true,
-        //   pauseOnFocusLoss: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   draggablePercent: 0.6,
-        //   showCloseButtonOnHover: true,
-        //   hideProgressBar: false,
-        //   closeButton: 'button',
-        //   icon: true,
-        //   rtl: false,
-        // })
+        this.$toast.success('Delete done! Check your discount manager', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error)
         // eslint-disable-next-line no-console
         console.log(error.response.data)
 
-        // this.$toast.error('Delete failed discount', {
-        //   position: 'top-right',
-        //   timeout: 5000,
-        //   closeOnClick: true,
-        //   pauseOnFocusLoss: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   draggablePercent: 0.6,
-        //   showCloseButtonOnHover: true,
-        //   hideProgressBar: false,
-        //   closeButton: 'button',
-        //   icon: true,
-        //   rtl: false,
-        // })
+        this.$toast.error('Delete failed discount', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
+      }
+    },
+
+    async checkLogin() {
+      try {
+        const response = await this.$axios.get(`/api/checkLogin`)
+        // eslint-disable-next-line no-console
+        console.log(response)
+        if (response.data === 'chua_dang_nhap') {
+          // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+          this.$router.push('/')
+        }
+      } catch (e) {
+        // Xử lý lỗi
+        // eslint-disable-next-line no-console
+        console.log(e)
       }
     },
   },

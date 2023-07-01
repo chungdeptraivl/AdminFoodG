@@ -19,12 +19,14 @@
       <v-card>
         <v-card-title class="headline">If you are Super Admin</v-card-title>
         <v-card-text> Confirm Super Admin's password to continute </v-card-text>
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Enter Password"
-          class="confirmPassword"
-        />
+        <div class="d-flex flex-column align-start">
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Enter Password"
+            class="confirmPassword"
+          />
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="success" text @click="login">Submit</v-btn>
@@ -87,7 +89,7 @@ export default {
   border-radius: 4px;
   background-color: #198754;
 }
-.confirmPassword{
+.confirmPassword {
   padding: 6px;
   margin: 4px 20px;
   width: 80%;
@@ -96,5 +98,4 @@ export default {
   color: #fff;
   font-size: 20px;
 }
-
 </style>

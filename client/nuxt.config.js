@@ -50,8 +50,37 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/i18n',
   ],
+
+  // Cấu hình chung cho i18n
+  i18n: {
+    langDir: 'locales',
+    locales: [
+    {
+      code: 'en',
+      iso:'en',
+      name:'English',
+      file: 'en.json'
+    },
+    {
+      code: 'vi',
+      iso:'vi',
+      name:'Vietnam',
+      file: 'vi.json'
+    },
+  ],
+    defaultLocale: 'en',
+    vueI18n: {
+      fallbackLocale: 'en',
+      // Đổi đường dẫn đến thư mục lang của bạn
+      // messages: {
+      //   en: require('./lang/en.json'),
+      //   vi: require('./lang/vi.json'),
+      // },
+    },
+  },
 
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
