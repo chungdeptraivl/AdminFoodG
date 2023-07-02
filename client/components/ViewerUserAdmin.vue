@@ -29,7 +29,7 @@
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" text @click="login">Submit</v-btn>
+          <v-btn color="success"  text @click="login">Submit</v-btn>
           <v-btn color="error" text @click="closeModal = false">Exit</v-btn>
         </v-card-actions>
       </v-card>
@@ -75,8 +75,10 @@ export default {
         this.showModal = false
         this.password = ''
         this.$router.push('/viewerPage/registerAdmin')
+      } else if (this.password === '') {
+        alert('Password is not space-separated')
       } else {
-        alert('Wrong password')
+        alert('Password was wrong')
       }
     },
   },

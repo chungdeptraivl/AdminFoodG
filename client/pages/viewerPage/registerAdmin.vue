@@ -10,7 +10,7 @@
             <v-text-field
               v-model="form.username"
               label="Username"
-              :rules="[rules.required, rules.minLength(5), rules.noSpaces]"
+              :rules="[rules.required, rules.minLength(6), rules.noSpaces, rules.maxLength(20)]"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="4">
@@ -256,6 +256,22 @@ export default {
         // eslint-disable-next-line no-console
         console.log(response)
         if (response.data === 'chua_dang_nhap') {
+
+          this.$toast.error('You must login', {
+          position: 'top-right',
+          timeout: 5000,
+          closeOnClick: true,
+          pauseOnFocusLoss: true,
+          pauseOnHover: true,
+          draggable: true,
+          draggablePercent: 0.6,
+          showCloseButtonOnHover: true,
+          hideProgressBar: false,
+          closeButton: 'button',
+          icon: true,
+          rtl: false,
+        })
+
           // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
           this.$router.push('/')
         }

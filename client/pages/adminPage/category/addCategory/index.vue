@@ -5,7 +5,7 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" md="8">
+            <v-col cols="12" md="12">
               <v-text-field
                 v-model="form.name"
                 class="mb-6"

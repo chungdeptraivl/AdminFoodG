@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="3" class="mb-4">
-    <v-card class="px-5 py-6" :to="'/clientDashboard'" nuxt>
+    <v-card class="px-5 py-6" :to="'/customerDashboard'" nuxt>
         <v-row class="d-flex justify-center align-center">
           <v-col cols="12" md="4">
             <v-icon class="d-flex justify-center align-center eye"

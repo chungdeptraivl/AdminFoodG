@@ -60,7 +60,7 @@
                 ]"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" md="6">
+            <!-- <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.minAmount"
                 class="mb-6"
@@ -73,8 +73,8 @@
                     'Invalid Min Amount format',
                 ]"
               ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
+            </v-col> -->
+            <!-- <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.maxAmount"
                 class="mb-6"
@@ -87,7 +87,7 @@
                     'Invalid Max Amount format',
                 ]"
               ></v-text-field>
-            </v-col>
+            </v-col> -->
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.startDate"
@@ -149,10 +149,10 @@ export default {
       form: {
         code: '',
         maxDiscountPrice: '',
-        minAmount: '',
+        // minAmount: '',
         percentage: '',
         endDate: '',
-        maxAmount: '',
+        // maxAmount: '',
         startDate: '',
         isActive: '',
         deletedBy: '',
@@ -174,8 +174,8 @@ export default {
       return (
         !!this.form.code &&
         !!this.form.maxDiscountPrice &&
-        !!this.form.minAmount &&
-        !!this.form.maxAmount &&
+        // !!this.form.minAmount &&
+        // !!this.form.maxAmount &&
         !!this.form.percentage &&
         !!this.form.startDate &&
         !!this.form.endDate
@@ -187,10 +187,10 @@ export default {
     this.form.id = this.discount.data.id
     this.form.code = this.discount.data.code
     this.form.maxDiscountPrice = this.discount.data.maxDiscountPrice
-    this.form.minAmount = this.discount.data.minAmount
+    // this.form.minAmount = this.discount.data.minAmount
     this.form.percentage = this.discount.data.percentage
     this.form.endDate = this.discount.data.endDate
-    this.form.maxAmount = this.discount.data.maxAmount
+    // this.form.maxAmount = this.discount.data.maxAmount
     this.form.startDate = this.discount.data.startDate
     this.form.isActive = this.discount.data.isActive
     this.form.deletedBy = this.discount.data.deletedBy
@@ -202,8 +202,8 @@ export default {
     async saveDiscount(id) {
       if (
         this.form.maxDiscountPrice < 0 ||
-        this.form.maxAmount < 0 ||
-        this.form.minAmount < 0 ||
+        // this.form.maxAmount < 0 ||
+        // this.form.minAmount < 0 ||
         this.form.percentage < 0
       ) {
         this.$toast.error('Edit discount failed check again validation')
@@ -213,10 +213,10 @@ export default {
             id: this.form.id,
             code: this.form.code,
             maxDiscountPrice: this.form.maxDiscountPrice,
-            minAmount: this.form.minAmount,
+            // minAmount: this.form.minAmount,
             percentage: this.form.percentage,
             endDate: this.form.endDate,
-            maxAmount: this.form.maxAmount,
+            // maxAmount: this.form.maxAmount,
             startDate: this.form.startDate,
             isActive: this.form.isActive,
             deletedBy: this.form.deletedBy,
